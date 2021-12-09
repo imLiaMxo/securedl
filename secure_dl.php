@@ -17,17 +17,31 @@ class SecureDownload
 	/**
 	 * Constructor. Connects to the database.
 	 *
-	 * @param string $db_user Login username.
-	 * @param string $db_password The password of $db_user.
-	 * @param string $db_name Name of the database to connect to.
-	 * @param string $db_host Server the database is hosted on.
-	 *
 	 * @return void
 	 */
-	function __construct( $_db_user, $_db_password, $_db_name, $_db_host )
-	{
-		$this->db = new ezSQL_mysql( $_db_user, $_db_password, $_db_name, $_db_host );
-	}
+        public function __construct()
+        {
+
+            $this->host = 'hostname';
+            $this->dbname = 'dbname';
+            $this->user = 'username';
+            $this->pass = 'password';
+
+            return $this;
+        }
+	
+        private function connect(): PDO
+        {
+            try {
+                $db = new PDO("mysql:host={$this->host};dbname={$this->dbname}",$this->user,$this->pass);
+                $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+                return $db;
+            } catch (PDOException $e)
+            {
+                return Debug::dump($e->getMessage());
+            }
+        }
 
 	/**
 	 * Create a download key and store it in the database.
